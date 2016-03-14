@@ -15,7 +15,7 @@ export default (ComposedComponent) => {
         }
 
         componentWillUnmount() {
-            LoginStore.removeChangeListener(this.changeListener);
+
         }
 
         render() {
