@@ -36,7 +36,8 @@
   "devDependencies": {
     "babel-cli": "6.5.1",
     "babel-jest": "^9.0.3",
-    "jest": "^0.1.40"
+    "jest": "^0.1.40",
+    "react-addons-test-utils": "^0.14.7"
   },
   "jest": {
     "unmockedModulePathPatterns": [

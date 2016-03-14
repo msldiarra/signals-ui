@@ -9,7 +9,7 @@ export default class Header extends React.Component {
 
         var headerItems = "";
 
-        if (!!this.props.props) {
+        if (!!this.props.user) {
             headerItems =
                 <ul className="nav navbar-nav navbar-right">
                     <li className="active"><Link to="home">Dashboard</Link></li>
