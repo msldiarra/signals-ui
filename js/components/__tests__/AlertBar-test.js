@@ -82,4 +82,24 @@ describe('Header', () => {
         expect(element).not.toBeNull();
     });
 
+    it('Bar width should be equal to fillingRate', () => {
+
+        let tank = {
+            id: 1,
+            liquidType: 'liquid type',
+            name: 'tank name',
+            station: 'station name',
+            fillingRate: 66
+        };
+
+        const alert = TestUtils.renderIntoDocument(
+            <AlertBar key={tank.id} tank={tank} />
+        );
+
+        const element = TestUtils.findRenderedDOMComponentWithClass(alert, 'progress-bar-success');
+        expect(element).not.toBeNull();
+        expect(element.style).not.toBeNull();
+        expect(element.style.width).toEqual("66%");
+    });
+
 });

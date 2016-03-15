@@ -4,8 +4,6 @@ export default class AlertBar extends React.Component {
 
     render() {
 
-        let inlineWidth = "width:40%";
-
         let progressBarClass = (this.props.tank.fillingRate > 50) ?
             "progress-bar progress-bar-success" :
             (this.props.tank.fillingRate > 30) ?
