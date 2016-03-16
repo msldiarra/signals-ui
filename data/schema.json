@@ -100,7 +100,7 @@
             },
             {
               "kind": "OBJECT",
-              "name": "Widget",
+              "name": "TankInAlert",
               "ofType": null
             }
           ]
@@ -127,8 +127,8 @@
               "deprecationReason": null
             },
             {
-              "name": "widgets",
-              "description": "A person's collection of widgets",
+              "name": "tanksInAlert",
+              "description": "A customer's collection of tanks inalert",
               "args": [
                 {
                   "name": "after",
@@ -342,7 +342,7 @@
               "args": [],
               "type": {
                 "kind": "OBJECT",
-                "name": "Widget",
+                "name": "TankInAlert",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -372,8 +372,8 @@
         },
         {
           "kind": "OBJECT",
-          "name": "Widget",
-          "description": "A shiny widget",
+          "name": "TankInAlert",
+          "description": "Alert on a tank",
           "fields": [
             {
               "name": "id",
@@ -392,8 +392,56 @@
               "deprecationReason": null
             },
             {
-              "name": "name",
-              "description": "The name of the widget",
+              "name": "tank",
+              "description": "The name of the tank",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "customer",
+              "description": "customer",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "station",
+              "description": "station",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "liquidType",
+              "description": "liquid in tank",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "fillingRate",
+              "description": "filling rate",
               "args": [],
               "type": {
                 "kind": "SCALAR",

@@ -1,42 +1,37 @@
-/**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
 import {
-  GraphQLBoolean,
-  GraphQLFloat,
-  GraphQLID,
-  GraphQLInt,
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLSchema,
-  GraphQLString,
+    GraphQLBoolean,
+    GraphQLFloat,
+    GraphQLID,
+    GraphQLInt,
+    GraphQLList,
+    GraphQLNonNull,
+    GraphQLObjectType,
+    GraphQLSchema,
+    GraphQLString,
 } from 'graphql';
 
 import {
-  connectionArgs,
-  connectionDefinitions,
-  connectionFromArray,
-  fromGlobalId,
-  globalIdField,
-  mutationWithClientMutationId,
-  nodeDefinitions,
+    connectionArgs,
+    connectionDefinitions,
+    connectionFromArray,
+    fromGlobalId,
+    globalIdField,
+    mutationWithClientMutationId,
+    nodeDefinitions,
 } from 'graphql-relay';
 
 import {
   // Import methods that your schema can use to interact with your database
-  User,
-  Widget,
-  getUser,
-  getViewer,
-  getWidget,
-  getWidgets,
+    User,
+    Login,
+    Contact,
+    ContactInfo,
+    Company,
+    TankInAlert,
+    getUser,
+    getViewer,
+    getTanksInAlert,
+    getTankInAlert,
 } from './database';
 
 /**
@@ -46,25 +41,17 @@ import {
  * The second defines the way we resolve an object to its GraphQL type.
  */
 var {nodeInterface, nodeField} = nodeDefinitions(
-  (globalId) => {
-    var {type, id} = fromGlobalId(globalId);
-    if (type === 'User') {
-      return getUser(id);
-    } else if (type === 'Widget') {
-      return getWidget(id);
-    } else {
-      return null;
+    (globalId) => {
+      var {type, id} = fromGlobalId(globalId);
+      if (type === 'User') {return getUser(id); }
+      else if (type === 'TankInAlert') { return getTankInAlert(id); }
+      else { return null; }
+    },
+    (obj) => {
+      if (obj instanceof User) { return userType; }
+      else if (obj instanceof TankInAlert) { return tankInAlertType; }
+      else { return null; }
     }
-  },
-  (obj) => {
-    if (obj instanceof User) {
-      return userType;
-    } else if (obj instanceof Widget)  {
-      return widgetType;
-    } else {
-      return null;
-    }
-  }
 );
 
 /**
@@ -76,34 +63,50 @@ var userType = new GraphQLObjectType({
   description: 'A person who uses our app',
   fields: () => ({
     id: globalIdField('User'),
-    widgets: {
-      type: widgetConnection,
-      description: 'A person\'s collection of widgets',
+    tanksInAlert: {
+      type: tankInAlertConnection,
+      description: 'A customer\'s collection of tanks inalert',
       args: connectionArgs,
-      resolve: (_, args) => connectionFromArray(getWidgets(), args),
+      resolve: (_, args) => connectionFromArray(getTanksInAlert(), args),
     },
   }),
   interfaces: [nodeInterface],
 });
 
-var widgetType = new GraphQLObjectType({
-  name: 'Widget',
-  description: 'A shiny widget',
+var tankInAlertType = new GraphQLObjectType({
+  name: 'TankInAlert',
+  description: 'Alert on a tank',
   fields: () => ({
-    id: globalIdField('Widget'),
-    name: {
+    id: globalIdField('TankInAlert'),
+    tank: {
       type: GraphQLString,
-      description: 'The name of the widget',
+      description: 'The name of the tank',
     },
+    customer: {
+      type: GraphQLString,
+      description: 'customer'
+    },
+    station:{
+      type: GraphQLString,
+      description: 'station'
+    },
+    liquidType: {
+      type: GraphQLString,
+      description: 'liquid in tank'
+    },
+    fillingRate: {
+      type: GraphQLString,
+      description: 'filling rate'
+    }
   }),
-  interfaces: [nodeInterface],
+  interfaces: [nodeInterface]
 });
 
 /**
  * Define your own connection types here
  */
-var {connectionType: widgetConnection} =
-  connectionDefinitions({name: 'Widget', nodeType: widgetType});
+var {connectionType: tankInAlertConnection} =
+    connectionDefinitions({name: 'Widget', nodeType: tankInAlertType});
 
 /**
  * This is the type that will be the root of our query,

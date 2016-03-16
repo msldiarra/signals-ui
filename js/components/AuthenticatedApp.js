@@ -32,11 +32,11 @@ export default Relay.createContainer(AuthenticatedApp, {
     fragments: {
         viewer: () => Relay.QL`
       fragment on User {
-        widgets(first: 10) {
+        tanksInAlert(first: 10) {
           edges {
             node {
               id,
-              name,
+              tank,
             },
           },
         },

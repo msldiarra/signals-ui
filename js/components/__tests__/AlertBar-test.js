@@ -7,14 +7,14 @@ import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 import AlertBar from '../AlertBar';
 
-describe('Header', () => {
+describe('AlertBar', () => {
 
     it('LiquidType, tankName and stationName should be displayed in sentence', () => {
 
         let tank = {
             id: 1,
             liquidType: 'liquid type',
-            name: 'tank name',
+            tank: 'tank name',
             station: 'station name',
             fillingRate: 50
         }
@@ -33,7 +33,7 @@ describe('Header', () => {
         let tank = {
             id: 1,
             liquidType: 'liquid type',
-            name: 'tank name',
+            tank: 'tank name',
             station: 'station name',
             fillingRate: 15
         };
@@ -51,7 +51,7 @@ describe('Header', () => {
         let tank = {
             id: 1,
             liquidType: 'liquid type',
-            name: 'tank name',
+            tank: 'tank name',
             station: 'station name',
             fillingRate: 75
         };
@@ -69,7 +69,7 @@ describe('Header', () => {
         let tank = {
             id: 1,
             liquidType: 'liquid type',
-            name: 'tank name',
+            tank: 'tank name',
             station: 'station name',
             fillingRate: 31
         };
@@ -87,7 +87,7 @@ describe('Header', () => {
         let tank = {
             id: 1,
             liquidType: 'liquid type',
-            name: 'tank name',
+            tank: 'tank name',
             station: 'station name',
             fillingRate: 66
         };

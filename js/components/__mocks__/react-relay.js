@@ -7,7 +7,7 @@ module.exports = {
     Store: {
         update: jest.genMockFn()
     },
-    createContainer: (compoent) => component
+    createContainer: (component) => component
 };
 
 /**
