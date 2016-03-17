@@ -31,7 +31,7 @@ describe('TanksInAlert', () => {
         viewer.tanksInAlert.edges = [{node:tank}];
 
         TestUtils.renderIntoDocument(
-            <TanksInAlert viewer={viewer} />
+            <TanksInAlert tanks={viewer} />
         );
 
         expect(AlertBar.mock.calls.length).toBe(1);
@@ -60,7 +60,7 @@ describe('TanksInAlert', () => {
         viewer.tanksInAlert.edges = [{node:tanks[0]}, {node:tanks[1]}];
 
         TestUtils.renderIntoDocument(
-            <TanksInAlert viewer={viewer} />
+            <TanksInAlert tanks={viewer} />
         );
 
         expect(AlertBar.mock.calls.length).toBe(2);
