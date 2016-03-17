@@ -1,6 +1,7 @@
 import React from 'react';
 import Relay from 'react-relay';
 import AlertBar from './AlertBar'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class TanksInAlert extends React.Component {
 
@@ -12,7 +13,9 @@ class TanksInAlert extends React.Component {
 
         return (
             <div className="padding-25">
-                {bars}
+                <ReactCSSTransitionGroup transitionName="example" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={0} transitionLeaveTimeout={0}>
+                    {bars}
+                </ReactCSSTransitionGroup>
             </div>
         );
     }
