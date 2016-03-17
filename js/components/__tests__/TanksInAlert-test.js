@@ -6,10 +6,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 import TanksInAlert from '../TanksInAlert';
+import AlertBar from '../AlertBar';
 
 describe('TanksInAlert', () => {
 
-    it('LiquidType, tankName and stationName should be displayed in sentence', () => {
+    beforeEach(function() {
+        AlertBar.mockClear();
+    });
+
+    it('Given one tank in alert' +
+       'When displaying TanksInAlert component' +
+       'It should contain 1 AlertBar component', () => {
 
         var viewer = {};
         let tank = {
@@ -23,14 +30,40 @@ describe('TanksInAlert', () => {
         viewer.tanksInAlert = {}
         viewer.tanksInAlert.edges = [{node:tank}];
 
-        const alert = TestUtils.renderIntoDocument(
+        TestUtils.renderIntoDocument(
             <TanksInAlert viewer={viewer} />
         );
 
-        const node = ReactDOM.findDOMNode(alert);
+        expect(AlertBar.mock.calls.length).toBe(1);
+    });
 
-        /*expect(node.textContent).toContain('Cuve liquid type tank name dans la station de station name');
-        expect(node.textContent).toContain('50%');*/
+    it('Given two tank in alerts' +
+        'When displaying TanksInAlert component' +
+        'It should contain 2 AlertBar component', () => {
+
+        var viewer = {};
+        let tanks = [{
+            id: 1,
+            liquidType: 'liquid type',
+            tank: 'tank name',
+            station: 'station name',
+            fillingRate: 50
+        },{
+            id: 2,
+            liquidType: 'liquid type',
+            tank: 'tank name',
+            station: 'station name',
+            fillingRate: 50
+        }];
+
+        viewer.tanksInAlert = {}
+        viewer.tanksInAlert.edges = [{node:tanks[0]}, {node:tanks[1]}];
+
+        TestUtils.renderIntoDocument(
+            <TanksInAlert viewer={viewer} />
+        );
+
+        expect(AlertBar.mock.calls.length).toBe(2);
     });
 
 });
