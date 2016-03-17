@@ -7,7 +7,9 @@ export default class Dashboard extends React.Component {
     render() {
         return (
             <div>
-                <h2><i className="fa fa-battery-half"></i> Cuves en alerte</h2>
+                <div className="page-header">
+                    <h2><i className="fa fa-battery-half"></i> Cuves en alerte</h2>
+                </div>
                 <TanksInAlert tanks={this.props.viewer} />
             </div>
         );
