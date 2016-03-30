@@ -10,13 +10,60 @@ const DB = new Sequelize(
     }
 )
 
-// Model types
-class User {}
-class Login {}
-class Contact {}
-class ContactInfo {}
-class Customer {}
-// Mock data
+const Customer = DB.define('customer', {
+      name: Sequelize.STRING
+    } , {timestamps: false, freezeTableName: true,}
+);
+
+const Contact =  DB.define('contact', {
+      firstname: Sequelize.STRING,
+      lastname: Sequelize.STRING,
+    } , {timestamps: false, freezeTableName: true,}
+);
+
+const Login = DB.define('login', {
+      login: Sequelize.STRING,
+      password: Sequelize.STRING,
+      enabled: Sequelize.BOOLEAN
+    } , {timestamps: false, freezeTableName: true,}
+);
+
+const ContactInfo = DB.define('contactInfo', {
+      email: Sequelize.STRING
+    } , {timestamps: false, freezeTableName: true,}
+);
+
+const CustomerContact = DB.define('customercontact', {
+      customerid: Sequelize.INTEGER,
+      contactid: Sequelize.INTEGER
+    } , {timestamps: false, freezeTableName: true,}
+);
+
+const ContactLogin = DB.define('contactlogin', {
+      contactid: Sequelize.INTEGER,
+      loginid: Sequelize.INTEGER
+    } , {timestamps: false, freezeTableName: true,}
+);
+
+Customer.belongsToMany(Contact, { through: CustomerContact, foreignKey: 'customerid' });
+Contact.belongsToMany(Customer, { through: CustomerContact, foreignKey: 'contactid' });
+
+Contact.belongsToMany(Login, { through: ContactLogin, foreignKey: 'contactid' });
+Login.belongsToMany(Contact, { through: ContactLogin, foreignKey: 'loginid' });
+
+/*
+ * User view for UI display need
+ * */
+DB.define('user', {
+      firstname: Sequelize.STRING,
+      lastname: Sequelize.STRING,
+      login: Sequelize.STRING,
+      password: Sequelize.STRING,
+      email: Sequelize.STRING,
+      enabled: Sequelize.BOOLEAN,
+      company: Sequelize.STRING
+    } , {timestamps: false, tableName: 'users', freezeTableName: true,}
+);
 
 const TanksInAlert = DB.define('TanksInAlert', {
   tank: Sequelize.STRING,
@@ -29,43 +76,6 @@ const TanksInAlert = DB.define('TanksInAlert', {
     } , {timestamps: false, tableName: 'tanksinalert'}
 );
 
-var login = new Login();
-login.id = 1;
-login.login = "login@";
-login.password = "password";
-
-var contactInfo = new ContactInfo();
-contactInfo.id = 1;
-contactInfo.email = 'name@email.co';
-
-var contact = new Contact();
-contact.id = 1;
-contact.firstName = 'firstName';
-contact.lastName = 'lastName';
-contact.contactInfoId = 1;
-
-var customer = new Customer();
-customer.id = 1;
-customer.name = 'customer 1';
-
-var viewer = new User();
-viewer.id = '1';
-viewer.credentials = login;
-viewer.contact = contact;
-viewer.info= contactInfo;
-viewer.company= customer;
-
-
 DB.sync({force: false});
 
-module.exports = {
-  // Export methods that your schema can use to interact with your database
-  getUser: (id) => id === viewer.id ? viewer : null,
-  getViewer: () => viewer,
-  DB,
-  User,
-  Login,
-  Contact,
-  ContactInfo,
-  Customer
-};
+export default DB;

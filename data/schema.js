@@ -21,35 +21,26 @@ import {
     nodeDefinitions,
 } from 'graphql-relay';
 
-import {
-  // Import methods that your schema can use to interact with your database
-    DB,
-    User,
-    Login,
-    Contact,
-    ContactInfo,
-    Customer,
-    getUser,
-    getViewer,
-    getTanksInAlert,
-    getTankInAlert,
-} from './database';
+import DB from './database';
 
-/**
- * We get the node interface and field from the Relay library.
- *
- * The first method defines the way we resolve an ID to its object.
- * The second defines the way we resolve an object to its GraphQL type.
- */
+
 var {nodeInterface, nodeField} = nodeDefinitions(
     (globalId) => {
       var {type, id} = fromGlobalId(globalId);
-      if (type === 'User') {return getUser(id); }
+      if (type === 'User') { return DB.models.user.findOne({where: {id: id}}); }
+      if (type === 'Contact') { return DB.models.contact.findOne({where: {id: id}}); }
+      if (type === 'ContactInfo') { return DB.models.contactInfo.findOne({where: {id: id}}); }
+      if (type === 'Login') { return DB.models.login.findOne({where: {id: id}}); }
+      if (type === 'Cusstomer') { return DB.models.customer.findOne({where: {id: id}}); }
       else if (type === 'TankInAlert') { return DB.models.TanksInAlert.findOne({where: {id: id}}); }
       else { return null; }
     },
     (obj) => {
       if (obj instanceof User) { return userType; }
+      else if (obj instanceof Contact) { return contactType; }
+      else if (obj instanceof Login) { return loginType; }
+      else if (obj instanceof ContactInfo) { return contactInfoType; }
+      else if (obj instanceof Customer) { return customerType; }
       else if (obj instanceof TankInAlert) { return tankInAlertType; }
       else { return null; }
     }
@@ -59,19 +50,74 @@ var {nodeInterface, nodeField} = nodeDefinitions(
  * Define your own types here
  */
 
-var userType = new GraphQLObjectType({
+const userType = new GraphQLObjectType({
   name: 'User',
   description: 'A person who uses our app',
-  fields: () => ({
-    id: globalIdField('User'),
-    tanksInAlert: {
-      type: tankInAlertConnection,
-      description: 'A customer\'s collection of tanks in alert',
-      args: connectionArgs,
-      resolve: (_, args) => connectionFromPromisedArray(DB.models.TanksInAlert.findAll({where: {customer: 'Petrolium Limited SA'}}), args)
+  fields: () => {
+    return {
+      id: globalIdField('User'),
+      credentials: { type: loginType, resolve(user) { return user.login } },
+      contact: { type: contactType, resolve(user) { return user.login } },
+      info: { type: contactInfoType, resolve(user) { return user.login } },
+      company: { type: customerType, resolve(user) { return user.company } },
+      tanksInAlert: {
+        type: tankInAlertConnection,
+        description: 'A customer\'s collection of tanks in alert',
+        args: connectionArgs,
+        resolve: (_, args) => connectionFromPromisedArray(DB.models.TanksInAlert.findAll({where: {customer: 'Petrolium Limited SA'}}), args)
+      }
     }
-  }),
-  interfaces: [nodeInterface],
+  },
+  interfaces: [nodeInterface]
+});
+
+const customerType = new GraphQLObjectType({
+  name: 'Customer',
+  fields: () => {
+    return {
+      id: globalIdField('Customer'),
+      name: { type: GraphQLString, resolve(customer) { return customer.name } },
+      contacts: { type: new GraphQLList(contactType), resolve(customer) { return customer.getContacts() } }
+    }
+  },
+  interfaces: [nodeInterface]
+});
+
+const contactType = new GraphQLObjectType({
+  name: 'Contact',
+  fields: () => {
+    return {
+      id: globalIdField('Contact'),
+      firstName: { type: GraphQLString, resolve(contact) { return contact.firstname } },
+      lastName: { type: GraphQLString, resolve(contact) { return contact.lastname } },
+      credentials: { type: new GraphQLList(loginType), resolve(contact) { return contact.getLogins() } }
+    }
+  },
+  interfaces: [nodeInterface]
+});
+
+const loginType = new GraphQLObjectType({
+  name: 'Login',
+  fields: () => {
+    return {
+      id: globalIdField('Login'),
+      login: { type: GraphQLString, resolve(login) { return login.login } },
+      password: { type: GraphQLString, resolve(login) { return login.password } },
+      enabled: { type: GraphQLBoolean, resolve(login) { return login.enabled } }
+    }
+  },
+  interfaces: [nodeInterface]
+});
+
+const contactInfoType = new GraphQLObjectType({
+  name: 'ContactInfo',
+  fields: () => {
+    return {
+      id: globalIdField('ContactInfo'),
+      email: { type: GraphQLString, resolve(contactInfo) { return contactInfo.email } }
+    }
+  },
+  interfaces: [nodeInterface]
 });
 
 var tankInAlertType = new GraphQLObjectType({
@@ -120,7 +166,7 @@ var queryType = new GraphQLObjectType({
     // Add your own root fields here
     viewer: {
       type: userType,
-      resolve: () => getViewer(),
+      resolve: () => DB.models.user.findOne({where: {id: 2}}),
     },
   }),
 });
