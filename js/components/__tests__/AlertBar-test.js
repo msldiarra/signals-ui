@@ -13,10 +13,10 @@ describe('AlertBar', () => {
 
         let tank = {
             id: 1,
-            liquidType: 'liquid type',
+            liquidtype: 'liquid type',
             tank: 'tank name',
             station: 'station name',
-            fillingRate: 50
+            fillingrate: 50
         }
         const alert = TestUtils.renderIntoDocument(
             <AlertBar key={tank.id} tank={tank} />
@@ -28,14 +28,14 @@ describe('AlertBar', () => {
         expect(node.textContent).toContain('50%');
     });
 
-    it('When fillingRate < 30, bar class should be progress-bar-danger', () => {
+    it('When fillingrate < 30, bar class should be progress-bar-danger', () => {
 
         let tank = {
             id: 1,
-            liquidType: 'liquid type',
+            liquidtype: 'liquid type',
             tank: 'tank name',
             station: 'station name',
-            fillingRate: 15
+            fillingrate: 15
         };
 
         const alert = TestUtils.renderIntoDocument(
@@ -46,14 +46,14 @@ describe('AlertBar', () => {
         expect(element).not.toBeNull();
     });
 
-    it('When fillingRate > 50, bar class should be progress-bar-success', () => {
+    it('When fillingrate > 50, bar class should be progress-bar-success', () => {
 
         let tank = {
             id: 1,
-            liquidType: 'liquid type',
+            liquidtype: 'liquid type',
             tank: 'tank name',
             station: 'station name',
-            fillingRate: 75
+            fillingrate: 75
         };
 
         const alert = TestUtils.renderIntoDocument(
@@ -64,14 +64,14 @@ describe('AlertBar', () => {
         expect(element).not.toBeNull();
     });
 
-    it('When 30 > fillingRate > 50, bar class should be progress-bar-success', () => {
+    it('When 30 > fillingrate > 50, bar class should be progress-bar-success', () => {
 
         let tank = {
             id: 1,
-            liquidType: 'liquid type',
+            liquidtype: 'liquid type',
             tank: 'tank name',
             station: 'station name',
-            fillingRate: 31
+            fillingrate: 31
         };
 
         const alert = TestUtils.renderIntoDocument(
@@ -82,14 +82,14 @@ describe('AlertBar', () => {
         expect(element).not.toBeNull();
     });
 
-    it('Bar width should be equal to fillingRate', () => {
+    it('Bar width should be equal to fillingrate', () => {
 
         let tank = {
             id: 1,
-            liquidType: 'liquid type',
+            liquidtype: 'liquid type',
             tank: 'tank name',
             station: 'station name',
-            fillingRate: 66
+            fillingrate: 66
         };
 
         const alert = TestUtils.renderIntoDocument(

@@ -128,7 +128,7 @@
             },
             {
               "name": "tanksInAlert",
-              "description": "A customer's collection of tanks inalert",
+              "description": "A customer's collection of tanks in alert",
               "args": [
                 {
                   "name": "after",
@@ -428,7 +428,7 @@
               "deprecationReason": null
             },
             {
-              "name": "liquidType",
+              "name": "liquidtype",
               "description": "liquid in tank",
               "args": [],
               "type": {
@@ -440,7 +440,7 @@
               "deprecationReason": null
             },
             {
-              "name": "fillingRate",
+              "name": "fillingrate",
               "description": "filling rate",
               "args": [],
               "type": {

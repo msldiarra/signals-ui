@@ -14,6 +14,7 @@ import {
     connectionArgs,
     connectionDefinitions,
     connectionFromArray,
+    connectionFromPromisedArray,
     fromGlobalId,
     globalIdField,
     mutationWithClientMutationId,
@@ -22,12 +23,12 @@ import {
 
 import {
   // Import methods that your schema can use to interact with your database
+    DB,
     User,
     Login,
     Contact,
     ContactInfo,
-    Company,
-    TankInAlert,
+    Customer,
     getUser,
     getViewer,
     getTanksInAlert,
@@ -44,7 +45,7 @@ var {nodeInterface, nodeField} = nodeDefinitions(
     (globalId) => {
       var {type, id} = fromGlobalId(globalId);
       if (type === 'User') {return getUser(id); }
-      else if (type === 'TankInAlert') { return getTankInAlert(id); }
+      else if (type === 'TankInAlert') { return DB.models.TanksInAlert.findOne({where: {id: id}}); }
       else { return null; }
     },
     (obj) => {
@@ -65,10 +66,10 @@ var userType = new GraphQLObjectType({
     id: globalIdField('User'),
     tanksInAlert: {
       type: tankInAlertConnection,
-      description: 'A customer\'s collection of tanks inalert',
+      description: 'A customer\'s collection of tanks in alert',
       args: connectionArgs,
-      resolve: (_, args) => connectionFromArray(getTanksInAlert(), args),
-    },
+      resolve: (_, args) => connectionFromPromisedArray(DB.models.TanksInAlert.findAll({where: {customer: 'Petrolium Limited SA'}}), args)
+    }
   }),
   interfaces: [nodeInterface],
 });
@@ -90,11 +91,11 @@ var tankInAlertType = new GraphQLObjectType({
       type: GraphQLString,
       description: 'station'
     },
-    liquidType: {
+    liquidtype: {
       type: GraphQLString,
       description: 'liquid in tank'
     },
-    fillingRate: {
+    fillingrate: {
       type: GraphQLString,
       description: 'filling rate'
     }

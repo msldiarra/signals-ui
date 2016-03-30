@@ -1,3 +1,14 @@
+import Sequelize from 'sequelize';
+
+const DB = new Sequelize(
+    'signals',
+    'postgres',
+    '1234',
+    {
+      dialect: 'postgres',
+      host: 'localhost'
+    }
+)
 
 // Model types
 class User {}
@@ -5,17 +16,18 @@ class Login {}
 class Contact {}
 class ContactInfo {}
 class Customer {}
-class TankInAlert {}
-
 // Mock data
 
-
-// edges for user ?
-var tanksInAlert = [
-  {id: 1, tank: 'tank 1', customer: 'customer 1', station: 'station 1', liquidType: 'liquid type 1', fillingRate: '60'},
-  {id: 2, tank: 'tank 2', customer: 'customer 1', station: 'station 2', liquidType: 'liquid type 2', fillingRate: '15'},
-  {id: 3, tank: 'tank 3', customer: 'customer 1', station: 'station 3', liquidType: 'liquid type 3', fillingRate: '34'}
-];
+const TanksInAlert = DB.define('TanksInAlert', {
+  tank: Sequelize.STRING,
+  customer: Sequelize.STRING,
+  station: Sequelize.STRING,
+  liquidtype: Sequelize.STRING,
+  unit: Sequelize.STRING,
+  level: Sequelize.DECIMAL,
+  fillingrate: Sequelize.DECIMAL,
+    } , {timestamps: false, tableName: 'tanksinalert'}
+);
 
 var login = new Login();
 login.id = 1;
@@ -44,18 +56,16 @@ viewer.info= contactInfo;
 viewer.company= customer;
 
 
-
+DB.sync({force: false});
 
 module.exports = {
   // Export methods that your schema can use to interact with your database
   getUser: (id) => id === viewer.id ? viewer : null,
   getViewer: () => viewer,
-  getTankInAlert: (id) => tanksInAlert.find(w => w.id === id),
-  getTanksInAlert: () => tanksInAlert,
+  DB,
   User,
   Login,
   Contact,
   ContactInfo,
-  Customer,
-  TankInAlert
+  Customer
 };

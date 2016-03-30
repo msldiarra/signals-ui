@@ -30,9 +30,9 @@ export default Relay.createContainer(TanksInAlert, {
                 node {
                   id,
                   tank,
-                  fillingRate,
+                  fillingrate,
                   station,
-                  liquidType
+                  liquidtype
                 },
               },
             },
