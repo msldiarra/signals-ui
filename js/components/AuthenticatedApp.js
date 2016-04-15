@@ -5,6 +5,10 @@ import AuthService from './AuthService';
 
 class AuthenticatedApp extends React.Component {
 
+    static contextTypes = {
+        router: React.PropTypes.object.isRequired
+    };
+
     constructor() {
         super();
         this.state = {user: JSON.parse(localStorage.getItem('user'))};
@@ -14,7 +18,7 @@ class AuthenticatedApp extends React.Component {
 
         return (
             <div>
-                <Header user={this.state.user} onLogout={this.logout}/>
+                <Header user={this.state.user} onLogout={this.logout.bind(this)}/>
                 <div className="content">
                     <div className="container">
                         {this.props.children}
@@ -27,7 +31,9 @@ class AuthenticatedApp extends React.Component {
     logout(e) {
         e.preventDefault();
         AuthService.logout();
+        this.context.router.replace('login')
     }
+
 }
 
 export default Relay.createContainer(AuthenticatedApp, {
