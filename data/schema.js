@@ -166,7 +166,13 @@ var queryType = new GraphQLObjectType({
     // Add your own root fields here
     viewer: {
       type: userType,
-      resolve: () => DB.models.user.findOne({where: {id: 2}}),
+      args: {
+        userID: {
+          name: 'userID',
+          type: new GraphQLNonNull(GraphQLInt)
+        }
+      },
+      resolve: (root, {userID}) => DB.models.user.findOne({where: {id: userID}}),
     },
   }),
 });

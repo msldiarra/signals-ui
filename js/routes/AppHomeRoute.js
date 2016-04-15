@@ -8,15 +8,33 @@ import Login from '../components/Login';
 class RouteHome extends Relay.Route {
     static queries = {
         viewer: () => Relay.QL`
-      query {
-        viewer
-      }
-    `,
+          query {
+            viewer(userID: $userID)
+          }
+        `
+    };
+    static paramDefinitions = {
+        userID: {required: true},
     };
     static routeName = 'AppHomeRoute';
 }
 
-export default  <Route path="/" component={AuthenticatedApp} queries={RouteHome.queries}>
-                    <IndexRoute component={Dashboard} queries={RouteHome.queries} />
+function requireAuth(nextState, replace) {
+    if (!JSON.parse(localStorage.getItem('user'))) {
+        replace({
+            pathname: '/login',
+            state: { nextPathname: nextState.location.pathname }
+        })
+    }
+}
+
+function getUser(){
+    return {userID: JSON.parse(localStorage.getItem('user')).id }
+}
+
+export default  <Route>
+                    <Route path="/" component={AuthenticatedApp} queries={RouteHome.queries} prepareParams={() => getUser()}>
+                        <IndexRoute component={Dashboard} queries={RouteHome.queries} prepareParams={() => getUser()} onEnter={requireAuth}/>
+                    </Route>
                     <Route path="login" component={Login}  />
                 </Route>

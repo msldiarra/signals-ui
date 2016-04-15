@@ -7,13 +7,14 @@ class AuthenticatedApp extends React.Component {
 
     constructor() {
         super();
-        this.state = { user: JSON.parse(localStorage.getItem('user')) };
+        this.state = {user: JSON.parse(localStorage.getItem('user'))};
     }
 
     render() {
+
         return (
             <div>
-                <Header user={this.state.user} onLogout={this.logout} />
+                <Header user={this.state.user} onLogout={this.logout}/>
                 <div className="content">
                     <div className="container">
                         {this.props.children}
@@ -21,6 +22,7 @@ class AuthenticatedApp extends React.Component {
                 </div>
             </div>);
     }
+
 
     logout(e) {
         e.preventDefault();
@@ -31,16 +33,17 @@ class AuthenticatedApp extends React.Component {
 export default Relay.createContainer(AuthenticatedApp, {
     fragments: {
         viewer: () => Relay.QL`
-      fragment on User {
-        tanksInAlert(first: 10) {
-          edges {
-            node {
-              id,
-              tank,
-            },
-          },
-        },
-      }
+            fragment on User {
+                company
+                tanksInAlert(first: 10) {
+                  edges {
+                    node {
+                      id,
+                      tank,
+                    },
+                  },
+                },
+              }
     `,
     },
 });

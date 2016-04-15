@@ -7,7 +7,7 @@ import { useRouterHistory } from 'react-router'
 import { createHashHistory } from 'history'
 import routes from './routes/AppHomeRoute'
 
-localStorage.setItem('user', JSON.stringify({login:'fake', company:'test company'}));
+//localStorage.setItem('user', JSON.stringify({login:'fake', company:'test company'}));
 
 const appHistory = useRouterHistory(createHashHistory)({ queryKey: false })
 

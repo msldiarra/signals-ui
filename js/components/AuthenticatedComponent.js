@@ -4,6 +4,7 @@ export default (ComposedComponent) => {
     return class AuthenticatedComponent extends React.Component {
 
         static willTransitionTo(transition) {
+            console.log("test");
             if (!JSON.parse(localStorage.getItem('user'))) {
                 transition.redirect('/login', {}, {'nextPath' : transition.path});
             }
