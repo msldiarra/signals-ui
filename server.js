@@ -13,6 +13,11 @@ const APP_PORT = 3000;
 const API_PORT = 3001;
 const GRAPHQL_PORT = 8080;
 
+var isProduction = process.env.NODE_ENV === 'production';
+var applicationPort = isProduction ? process.env.APP_PORT : APP_PORT;
+var apiPort = isProduction ? process.env.API_PORT : API_PORT;
+var graphqlPort = isProduction ? process.env.GRAPHQL_PORT : GRAPHQL_PORT;
+
 // Expose a GraphQL endpoint
 var graphQLServer = express();
 
@@ -22,8 +27,8 @@ graphQLServer.use('/', graphQLHTTP({
     schema: Schema,
 }));
 
-graphQLServer.listen(GRAPHQL_PORT, () => console.log(
-    `GraphQL Server is now running on http://localhost:${GRAPHQL_PORT}`
+graphQLServer.listen(graphqlPort, () => console.log(
+    `GraphQL Server is now running on http://localhost:${graphqlPort}`
 ));
 
 
@@ -37,7 +42,7 @@ app.use(function (req, res, next) {
 });
 
 app.get('/', function (req, res) {
-    res.send('Hello! The API is at http://localhost:' + API_PORT + '/api');
+    res.send('Hello! The API is at http://localhost:' + apiPort + '/api');
 });
 
 app.post('/api/authenticate', (request, response) => {
@@ -75,34 +80,41 @@ app.post('/api/authenticate', (request, response) => {
         });
 });
 
-app.listen(API_PORT);
+app.listen(apiPort);
 
-// Serve the Relay app
-var compiler = webpack({
-    entry: path.resolve(__dirname, 'js', 'app.js'),
-    module: {
-        loaders: [
-            {
-                exclude: /node_modules/,
-                loader: 'babel',
-                test: /\.js$/,
-            }
-        ]
-    },
-    output: {filename: 'app.js', path: '/'}
-});
-var app = new WebpackDevServer(compiler, {
-    contentBase: '/public/',
-    proxy: {'/graphql': `http://localhost:${GRAPHQL_PORT}`},
-    publicPath: '/js/',
-    stats: {colors: true}
-});
+if(!isProduction) {
+
+	// Serve the Relay app
+	var compiler = webpack({
+	    entry: path.resolve(__dirname, 'js', 'app.js'),
+	    module: {
+		loaders: [
+		    {
+		        exclude: /node_modules/,
+		        loader: 'babel',
+		        test: /\.js$/,
+		    }
+		]
+	    },
+	    output: {filename: 'app.js', path: '/'}
+	});
+
+	var app = new WebpackDevServer(compiler, {
+	    contentBase: '/public/',
+	    proxy: {'/graphql': `http://localhost:${graphqlPort}`},
+	    publicPath: '/js/',
+	    stats: {colors: true}
+	});
+
+} else {
+	var app = express();
+}
 
 // Serve static resources
 app.use('/', express.static(path.resolve(__dirname, 'public')));
 
-app.listen(APP_PORT, () => {
-    console.log(`App is now running on http://localhost:${APP_PORT}`);
+app.listen(applicationPort, () => {
+    console.log(`App is now running on http://localhost:${applicationPort}`);
 });
 
 
