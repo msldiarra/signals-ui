@@ -62,7 +62,7 @@ DB.define('user', {
       email: Sequelize.STRING,
       enabled: Sequelize.BOOLEAN,
       company: Sequelize.STRING
-    } , {timestamps: false, tableName: 'users', freezeTableName: true,}
+    } , {timestamps: false, tableName: 'users'}
 );
 
 const TanksInAlert = DB.define('TanksInAlert', {

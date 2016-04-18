@@ -8,15 +8,19 @@ import jwt from 'jsonwebtoken';
 import {Schema} from './data/schema';
 import bodyParser from 'body-parser';
 import crypto from 'crypto';
+import request from 'request';
 
 const APP_PORT = 3000;
 const API_PORT = 3001;
 const GRAPHQL_PORT = 8080;
 
-var isProduction = process.env.NODE_ENV === 'production';
-var applicationPort = isProduction ? process.env.APP_PORT : APP_PORT;
-var apiPort = isProduction ? process.env.API_PORT : API_PORT;
-var graphqlPort = isProduction ? process.env.GRAPHQL_PORT : GRAPHQL_PORT;
+console.log("process.env.NODE_ENV : ");
+console.log(process.env.NODE_ENV)
+
+var isProduction = process.env.NODE_ENV == 'production';
+var applicationPort = isProduction ? APP_PORT : APP_PORT;
+var apiPort = isProduction ? API_PORT : API_PORT;
+var graphqlPort = isProduction ? GRAPHQL_PORT : GRAPHQL_PORT;
 
 // Expose a GraphQL endpoint
 var graphQLServer = express();
@@ -37,7 +41,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");    
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Credentials", true);
     next();
 });
 
@@ -50,6 +56,8 @@ app.post('/api/authenticate', (request, response) => {
     DB.models.user
         .findOne({where: {login: request.body.login}})
         .then((user) => {
+	    
+            console.log(user);    
 
             var password = crypto.createHash("sha256").update(request.body.password).digest("base64");
 
@@ -82,6 +90,7 @@ app.post('/api/authenticate', (request, response) => {
 
 app.listen(apiPort);
 
+
 if(!isProduction) {
 
 	// Serve the Relay app
@@ -99,7 +108,7 @@ if(!isProduction) {
 	    output: {filename: 'app.js', path: '/'}
 	});
 
-	var app = new WebpackDevServer(compiler, {
+	var application = new WebpackDevServer(compiler, {
 	    contentBase: '/public/',
 	    proxy: {'/graphql': `http://localhost:${graphqlPort}`},
 	    publicPath: '/js/',
@@ -107,13 +116,19 @@ if(!isProduction) {
 	});
 
 } else {
-	var app = express();
+  
+  var application = express();
+  application.use('/graphql', (req, res) => {
+    var url = 'http://localhost:8080/' + req.url;
+    req.pipe(request(url)).pipe(res); 
+  })
+
 }
 
 // Serve static resources
-app.use('/', express.static(path.resolve(__dirname, 'public')));
+application.use('/', express.static(path.resolve(__dirname, 'public')));
 
-app.listen(applicationPort, () => {
+application.listen(applicationPort, () => {
     console.log(`App is now running on http://localhost:${applicationPort}`);
 });
 
