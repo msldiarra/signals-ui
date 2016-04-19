@@ -116,7 +116,7 @@ if(!isProduction) {
   
   var application = express();
   application.use('/graphql', (req, res) => {
-    var url = 'http://localhost:8080/' + req.url;
+    var url = `http://localhost:${graphqlPort}/req.url` ;
     req.pipe(request(url)).pipe(res); 
   })
 
