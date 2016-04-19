@@ -1,5 +1,5 @@
 import Sequelize from 'sequelize';
-import faker from 'faker';
+import faker from 'Faker';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -15,10 +15,6 @@ const DB = new Sequelize(
     }
 );
 
-
-
-
-
 // {"tankReference":"A00000000000003","level":90,"time":"2015-06-28'T'15:35:09.000Z"}
 
 const Alert = DB.define('Alert', {
@@ -33,8 +29,8 @@ const Alert = DB.define('Alert', {
 DB.sync({force: false}).then(() => _.times(100, () => {
         return Alert.create({
             tankreference: "A00000000000001",
-            level: 200
-            //time: moment().format()
+            level: 200,
+            time: moment().format()
         }).then(() => {
             return null;
         })

@@ -31,7 +31,8 @@ var {nodeInterface, nodeField} = nodeDefinitions(
       if (type === 'Contact') { return DB.models.contact.findOne({where: {id: id}}); }
       if (type === 'ContactInfo') { return DB.models.contactInfo.findOne({where: {id: id}}); }
       if (type === 'Login') { return DB.models.login.findOne({where: {id: id}}); }
-      if (type === 'Cusstomer') { return DB.models.customer.findOne({where: {id: id}}); }
+      if (type === 'Customer') { return DB.models.customer.findOne({where: {id: id}}); }
+      if (type === 'TankMonitoring') { return DB.models.TankMonitoring.findOne({where: {id: id}}); }
       else if (type === 'TankInAlert') { return DB.models.TanksInAlert.findOne({where: {id: id}}); }
       else { return null; }
     },
@@ -41,6 +42,7 @@ var {nodeInterface, nodeField} = nodeDefinitions(
       else if (obj instanceof Login) { return loginType; }
       else if (obj instanceof ContactInfo) { return contactInfoType; }
       else if (obj instanceof Customer) { return customerType; }
+      else if (obj instanceof TankMonitoring) { return tankMonitoringType; }
       else if (obj instanceof TankInAlert) { return tankInAlertType; }
       else { return null; }
     }
@@ -49,6 +51,7 @@ var {nodeInterface, nodeField} = nodeDefinitions(
 /**
  * Define your own types here
  */
+
 
 const userType = new GraphQLObjectType({
   name: 'User',
@@ -62,9 +65,14 @@ const userType = new GraphQLObjectType({
       company: { type: customerType, resolve(user) { return user.company } },
       tanksInAlert: {
         type: tankInAlertConnection,
-        description: 'A customer\'s collection of tanks in alert',
+        description: "A customer's collection of tanks in alert",
         args: connectionArgs,
         resolve: (_, args) => connectionFromPromisedArray(DB.models.TanksInAlert.findAll({where: {customer: 'Petrolium Limited SA'}}), args)
+      },
+      monitoring: {
+        type: tankMonitoringType,
+        description: "Temporary, for demo purposes",
+        resolve: () => DB.models.TankMonitoring.findOne({where: {id: 1}})
       }
     }
   },
@@ -144,6 +152,31 @@ var tankInAlertType = new GraphQLObjectType({
     fillingrate: {
       type: GraphQLString,
       description: 'filling rate'
+    }
+  }),
+  interfaces: [nodeInterface]
+});
+
+var tankMonitoringType = new GraphQLObjectType({
+  name: 'TankMonitoring',
+  description: 'Status on tank gauge',
+  fields: () => ({
+    id: globalIdField('TankMonitoring'),
+    measurecount: {
+      type: GraphQLInt,
+      description: 'total number of measure sent by tank gauge'
+    },
+    oldestmeasuretime: {
+      type: GraphQLString,
+      description: 'first registered measure'
+    },
+    latestmeasuretime:{
+      type: GraphQLString,
+      description: 'last registered measure'
+    },
+    latestmeasurelevel: {
+      type: GraphQLFloat,
+      description: 'last level sent by gauge'
     }
   }),
   interfaces: [nodeInterface]

@@ -122,8 +122,9 @@ ul.tanks li span.box {
 
 .progress .bar{height:100%}
 .progress span{
-    position:relative;top:0!important;z-index:2;color:#3F3F3F;
-    text-align: center;width: 100% ;font-size: 17px;font-weight: 800;
+    position:relative;top:0!important;z-index:2; color:#261C21;
+    padding-left:15px;
+    text-align: center;width: 100% ;font-size: 17px;font-weight: 600;
     height: 50px;line-height: 50px;vertical-align: middle
 }
 
@@ -276,18 +277,3 @@ a {
 }
 
 .progress{height:50px!important}
-
-.progress .bar{height:100%}
-
-.progress span {position:relative;top:0!important;
-    z-index:2;color:#FFF5CD;text-align: center;width: 100% ;
-    font-size: 17px;font-weight: 800;height: 50px;line-height: 50px;
-    vertical-align: middle
-}
-.progress-bar-sucess {
-    background-color:transparent;
-    background-color: #08BF61!important}
-
-.progress-bar-warning{background-color:transparent;background-color:#FFBD4B!important}
-
-.progress-bar-danger {background-color: transparent;background-color: #FF5722!important;}

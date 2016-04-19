@@ -12,7 +12,7 @@ import request from 'request';
 
 const APP_PORT = 3000;
 const API_PORT = 3001;
-const GRAPHQL_PORT = 8080;
+const GRAPHQL_PORT = 8181;
 
 console.log("process.env.NODE_ENV : ");
 console.log(process.env.NODE_ENV)
@@ -28,7 +28,7 @@ var graphQLServer = express();
 graphQLServer.use('/', graphQLHTTP({
     graphiql: true,
     pretty: true,
-    schema: Schema,
+    schema: Schema
 }));
 
 graphQLServer.listen(graphqlPort, () => console.log(
@@ -56,9 +56,6 @@ app.post('/api/authenticate', (request, response) => {
     DB.models.user
         .findOne({where: {login: request.body.login}})
         .then((user) => {
-	    
-            console.log(user);    
-
             var password = crypto.createHash("sha256").update(request.body.password).digest("base64");
 
             if (user.password != password) {

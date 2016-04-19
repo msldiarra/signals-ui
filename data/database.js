@@ -76,6 +76,14 @@ const TanksInAlert = DB.define('TanksInAlert', {
     } , {timestamps: false, tableName: 'tanksinalert'}
 );
 
+const TankMonitoring = DB.define('TankMonitoring', {
+  measurecount: Sequelize.INTEGER,
+  oldestmeasuretime: Sequelize.DATE,
+  latestmeasuretime: Sequelize.DATE,
+  latestmeasurelevel: Sequelize.DECIMAL
+    } , {timestamps: false, tableName: 'tankmonitoring'}
+);
+
 DB.sync({force: false});
 
 export default DB;
