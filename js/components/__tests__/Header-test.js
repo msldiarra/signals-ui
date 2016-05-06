@@ -20,14 +20,14 @@ describe('Header', () => {
         expect(headerNode.textContent).toContain('NIVELL');
     });
 
-    it('Dashboard link should be displayed when user is logged in', () => {
+    it('Logout link should be displayed when user is logged in', () => {
 
         const header = TestUtils.renderIntoDocument(
             <Header user={{company:'company name'}} />
         );
 
         const headerNode = ReactDOM.findDOMNode(header);
-        expect(headerNode.textContent).toContain('Dashboard');
+        expect(headerNode.textContent).toContain('Déconnexion');
         expect(headerNode.textContent).toContain('NIVELL');
     });
 
