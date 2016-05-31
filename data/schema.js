@@ -33,6 +33,8 @@ var {nodeInterface, nodeField} = nodeDefinitions(
       if (type === 'Login') { return DB.models.login.findOne({where: {id: id}}); }
       if (type === 'Customer') { return DB.models.customer.findOne({where: {id: id}}); }
       if (type === 'TankMonitoring') { return DB.models.TankMonitoring.findOne({where: {id: id}}); }
+      if (type === 'Stations') { return DB.models.Stations.findOne({where: {id: id}}); }
+      if (type === 'StationTankView') { return DB.models.StationTankView.findOne({where: {id: id}}); }
       else if (type === 'TankInAlert') { return DB.models.TanksInAlert.findOne({where: {id: id}}); }
       else { return null; }
     },
@@ -43,6 +45,8 @@ var {nodeInterface, nodeField} = nodeDefinitions(
       else if (obj instanceof ContactInfo) { return contactInfoType; }
       else if (obj instanceof Customer) { return customerType; }
       else if (obj instanceof TankMonitoring) { return tankMonitoringType; }
+      else if (obj instanceof Stations) { return stationsType; }
+      else if (obj instanceof StationTankView) { return stationTankViewType; }
       else if (obj instanceof TankInAlert) { return tankInAlertType; }
       else { return null; }
     }
@@ -68,6 +72,12 @@ const userType = new GraphQLObjectType({
         description: "A customer's collection of tanks in alert",
         args: connectionArgs,
         resolve: (_, args) => connectionFromPromisedArray(DB.models.TanksInAlert.findAll({where: {customer: 'Petrolium Limited SA'}}), args)
+      },
+      stations: {
+        type: stationsConnection,
+        description: "List of station belonging to customers",
+        args: connectionArgs,
+        resolve: (_, args) => connectionFromPromisedArray(DB.models.Stations.findAll({where: {customer: 'Petrolium Limited SA'}}), args)
       },
       monitoring: {
         type: tankMonitoringType,
@@ -125,6 +135,70 @@ const contactInfoType = new GraphQLObjectType({
       email: { type: GraphQLString, resolve(contactInfo) { return contactInfo.email } }
     }
   },
+  interfaces: [nodeInterface]
+});
+
+var stationsType = new GraphQLObjectType({
+  name: 'Stations',
+  description: 'Alert on a tank',
+  fields: () => ({
+    id: globalIdField('Stations'),
+    name: {
+      type: GraphQLString,
+      description: 'The name of the tank',
+    },
+    customer: {
+      type: GraphQLString,
+      description: 'customer'
+    },
+    reference:{
+      type: GraphQLString,
+      description: 'station reference'
+    },
+    tanks: {
+      type: stationTankViewConnection,
+      description: "A customer's specific station tank list information",
+      args: connectionArgs,
+      resolve: (stations, args) => connectionFromPromisedArray(DB.models.StationTankView.findAll({where: { stationreference: stations.reference } }), args)
+    }
+  }),
+  interfaces: [nodeInterface]
+});
+
+var stationTankViewType = new GraphQLObjectType({
+  name: 'StationTankView',
+  description: 'Tank informations',
+  fields: () => ({
+    id: globalIdField('TankView'),
+    stationid: {
+      type: GraphQLInt,
+      description: 'The id of station the tank belongs to',
+    },
+    stationreference:{
+      type: GraphQLString,
+      description: 'station reference'
+    },
+    tank: {
+      type: GraphQLString,
+      description: 'The name of the tank',
+    },
+    customer: {
+      type: GraphQLString,
+      description: 'customer'
+    },
+    station:{
+      type: GraphQLString,
+      description: 'station'
+    },
+    liquidtype: {
+      type: GraphQLString,
+      description: 'liquid in tank'
+    },
+    fillingrate: {
+      type: GraphQLString,
+      description: 'filling rate'
+    }
+  }),
   interfaces: [nodeInterface]
 });
 
@@ -186,7 +260,11 @@ var tankMonitoringType = new GraphQLObjectType({
  * Define your own connection types here
  */
 var {connectionType: tankInAlertConnection} =
-    connectionDefinitions({name: 'Widget', nodeType: tankInAlertType});
+    connectionDefinitions({name: 'Tanks', nodeType: tankInAlertType});
+var {connectionType: stationsConnection} =
+    connectionDefinitions({name: 'Stations', nodeType: stationsType});
+var {connectionType: stationTankViewConnection} =
+    connectionDefinitions({name: 'StationTankView', nodeType: stationTankViewType});
 
 /**
  * This is the type that will be the root of our query,

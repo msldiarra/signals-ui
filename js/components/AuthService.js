@@ -12,7 +12,7 @@ class Auth {
 
         console.log('testing credentials');
         return this.handleAuth(when(request({
-            url: 'http://37.187.196.21:3001/api/authenticate',
+            url: 'http://localhost:3001/api/authenticate',
             method: 'POST',
             crossOrigin: true,
             type: 'json',

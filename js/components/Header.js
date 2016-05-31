@@ -13,6 +13,7 @@ export default class Header extends React.Component {
             headerItems =
                 <ul className="nav navbar-nav navbar-right">
                     <li className=""><Link to="/monitoring">Monitoring</Link></li>
+                    <li className=""><Link to="/stations">Nos stations</Link></li>
                     <li><a href="" onClick={this.props.onLogout}>Déconnexion</a></li>
                 </ul>
         }
@@ -29,7 +30,7 @@ export default class Header extends React.Component {
                             <span className="icon-bar"></span>
                             <span className="icon-bar"></span>
                         </button>
-                        <a className="navbar-brand" href="#">NIVELL
+                        <a className="navbar-brand" href="#">NIVEL
                             <small>{this.props.user ? ' (' + this.props.user.company + ')' : '' }</small>
                         </a>
                     </div>

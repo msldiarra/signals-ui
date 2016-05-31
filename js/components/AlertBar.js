@@ -14,7 +14,7 @@ export default class AlertBar extends React.Component {
             <a className="black" href="#">
                 <div>
                     <div>
-                        <h5><i className="fa fa-filter"></i> Cuve {this.props.tank.liquidtype} {this.props.tank.tank} dans la station de {this.props.tank.station} </h5>
+                        <h5><i className="fa fa-filter"></i> {this.props.tank.tank} (<b>{this.props.tank.liquidtype}</b>) dans la station de <b>{this.props.tank.station}</b> </h5>
                     </div>
                     <div className="progress">
                         <div className={progressBarClass} role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style={{width:this.props.tank.fillingrate + '%'}}>

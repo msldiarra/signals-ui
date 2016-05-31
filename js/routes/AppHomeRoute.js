@@ -4,6 +4,8 @@ import { IndexRoute, Route } from 'react-router';
 import AuthenticatedApp from '../components/AuthenticatedApp';
 import Dashboard from '../components/Dashboard';
 import Monitoring from '../components/Monitoring';
+import Stations from '../components/Stations';
+import StationTanks from '../components/StationTanks';
 import Login from '../components/Login';
 
 class RouteHome extends Relay.Route {
@@ -40,7 +42,9 @@ function getParams(params, route){
 
 export default  <Route>
                     <Route path="/" component={AuthenticatedApp} queries={RouteHome.queries} prepareParams={getParams} >
-                        <Route path="monitoring" component={Monitoring} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
+                        <Route path="Monitoring" component={Monitoring} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
+                        <Route path="Stations" component={Stations} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
+                        <Route path="Station" component={Stations} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                         <IndexRoute component={Dashboard} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                     </Route>
                     <Route path="login" component={Login}  />

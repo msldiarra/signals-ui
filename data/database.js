@@ -76,6 +76,26 @@ const TanksInAlert = DB.define('TanksInAlert', {
     } , {timestamps: false, tableName: 'tanksinalert'}
 );
 
+const StationTankView = DB.define('StationTankView', {
+        stationid: Sequelize.INTEGER,
+        stationreference: Sequelize.STRING,
+        tank: Sequelize.STRING,
+        customer: Sequelize.STRING,
+        station: Sequelize.STRING,
+        liquidtype: Sequelize.STRING,
+        unit: Sequelize.STRING,
+        level: Sequelize.DECIMAL,
+        fillingrate: Sequelize.DECIMAL,
+    } , {timestamps: false, tableName: 'stationtankview'}
+);
+
+const Stations = DB.define('Stations', {
+        name: Sequelize.STRING,
+        reference: Sequelize.STRING,
+        customer: Sequelize.STRING
+    } , {timestamps: false, tableName: 'stations'}
+);
+
 const TankMonitoring = DB.define('TankMonitoring', {
   measurecount: Sequelize.INTEGER,
   oldestmeasuretime: Sequelize.DATE,

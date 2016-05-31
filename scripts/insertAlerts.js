@@ -26,10 +26,50 @@ const Alert = DB.define('Alert', {
 
 ;
 
-DB.sync({force: false}).then(() => _.times(100, () => {
+// Banankabougou
+// Cuve essence
+DB.sync({force: false}).then(() => _.times(10, () => {
         return Alert.create({
             tankreference: "A00000000000001",
             level: 200,
+            time: moment().format()
+        }).then(() => {
+            return null;
+        })
+    })
+);
+
+// Cuve Gazoil SP 91
+DB.sync({force: false}).then(() => _.times(10, () => {
+        return Alert.create({
+            tankreference: "A00000000000002",
+            level: 1000,
+            time: moment().format()
+        }).then(() => {
+            return null;
+        })
+    })
+);
+
+// Cuve Gazoil SP 95
+DB.sync({force: false}).then(() => _.times(10, () => {
+        return Alert.create({
+            tankreference: "A00000000000003",
+            level: 10000,
+            time: moment().format()
+        }).then(() => {
+            return null;
+        })
+    })
+);
+
+// Badalabougou
+
+// Cuve Essence
+DB.sync({force: false}).then(() => _.times(10, () => {
+        return Alert.create({
+            tankreference: "A00000000000011",
+            level: 25000,
             time: moment().format()
         }).then(() => {
             return null;
