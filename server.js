@@ -9,6 +9,7 @@ import {Schema} from './data/schema';
 import bodyParser from 'body-parser';
 import crypto from 'crypto';
 import request from 'request';
+import https from 'https';
 
 const APP_PORT = 3000;
 const API_PORT = 3001;
@@ -37,11 +38,54 @@ graphQLServer.listen(graphqlPort, () => console.log(
 
 
 var app = express();
+
+if(!isProduction) {
+
+	// Serve the Relay app
+	var compiler = webpack({
+	    entry: path.resolve(__dirname, 'js', 'app.js'),
+	    module: {
+		loaders: [
+		    {
+		        exclude: /node_modules/,
+		        loader: 'babel',
+		        test: /\.js$/,
+		    }
+		]
+	    },
+	    output: {filename: 'app.js', path: '/'}
+	});
+
+	var application = new WebpackDevServer(compiler, {
+	    contentBase: '/public/',
+	    proxy: {'/graphql': `http://localhost:${graphqlPort}`},
+	    publicPath: '/js/',
+	    stats: {colors: true}
+	});
+
+} else {
+
+    var application = express();
+
+    var server = https.createServer({
+        key: fs.readFileSync('./tls/key.pem'),
+        cert: fs.readFileSync('./tls/cert.pem')
+    }, application, app, graphQLServer);
+
+    application.use('/graphql', (req, res) => {
+        var url = `http://localhost:${graphqlPort}/req.url` ;
+        req.pipe(request(url)).pipe(res);
+    });
+
+    server.listen(443);
+
+}
+
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");    
+    res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header("Access-Control-Allow-Credentials", true);
     next();
@@ -85,45 +129,11 @@ app.post('/api/authenticate', (request, response) => {
         });
 });
 
-app.listen(apiPort);
-
-
-if(!isProduction) {
-
-	// Serve the Relay app
-	var compiler = webpack({
-	    entry: path.resolve(__dirname, 'js', 'app.js'),
-	    module: {
-		loaders: [
-		    {
-		        exclude: /node_modules/,
-		        loader: 'babel',
-		        test: /\.js$/,
-		    }
-		]
-	    },
-	    output: {filename: 'app.js', path: '/'}
-	});
-
-	var application = new WebpackDevServer(compiler, {
-	    contentBase: '/public/',
-	    proxy: {'/graphql': `http://localhost:${graphqlPort}`},
-	    publicPath: '/js/',
-	    stats: {colors: true}
-	});
-
-} else {
-  
-  var application = express();
-  application.use('/graphql', (req, res) => {
-    var url = `http://localhost:${graphqlPort}/req.url` ;
-    req.pipe(request(url)).pipe(res); 
-  })
-
-}
-
 // Serve static resources
 application.use('/', express.static(path.resolve(__dirname, 'public')));
+
+
+app.listen(apiPort);
 
 application.listen(applicationPort, () => {
     console.log(`App is now running on http://localhost:${applicationPort}`);
